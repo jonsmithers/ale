@@ -51,7 +51,11 @@ function! ale#handlers#eslint#GetCwd(buffer) abort
     " Note: If node_modules not present yet, can't load local deps anyway.
     let l:executable = ale#path#FindNearestExecutable(a:buffer, s:executables)
 
-    if !empty(l:executable)
+    let l:package_json = ale#path#FindNearestFile(a:buffer, 'package.json')
+    if !empty(l:package_json)
+        let l:nmi = strridx(l:package_json, 'package.json')
+        let l:project_dir = l:package_json[0:l:nmi - 2]
+    elseif !empty(l:executable)
         let l:nmi = strridx(l:executable, 'node_modules')
         let l:project_dir = l:executable[0:l:nmi - 2]
     else
